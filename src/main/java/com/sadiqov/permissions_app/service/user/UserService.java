@@ -22,7 +22,7 @@ public interface UserService {
 
     AuthResponse register(RegisterRequest request);
 
-    public AuthResponse login(LoginRequest request);
+     AuthResponse login(LoginRequest request);
 
 }
 

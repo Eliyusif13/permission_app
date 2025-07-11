@@ -1,5 +1,6 @@
 package com.sadiqov.permissions_app.service.user;
 
+import com.sadiqov.permissions_app.config.jwt.JwtService;
 import com.sadiqov.permissions_app.dto.request.LoginRequest;
 import com.sadiqov.permissions_app.dto.request.RegisterRequest;
 import com.sadiqov.permissions_app.dto.request.UserRequest;
@@ -17,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +32,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final UserMapper userMapper;
@@ -135,18 +140,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.username(), request.password()
+                )
+        );
+
         User user = userRepository.findByUsername(request.username())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        messageSource.getMessage("user.not.found", null, LocaleContextHolder.getLocale())
-                ));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new EntityNotFoundException(
-                    messageSource.getMessage("password.required", null, LocaleContextHolder.getLocale())
-            );
-        }
+        String token = jwtService.generateToken(user.getUsername());
 
-        return new AuthResponse("Login successful for user: " + user.getUsername());
+        return AuthResponse.builder()
+                .token(token)
+                .build();
     }
 
 }

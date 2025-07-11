@@ -20,6 +20,7 @@ public record RegisterRequest(
         String password,
         @NotNull
         Set<Long> groupIds,
+        @NotNull
         Set<Long> permissionIds
 
 ) {
