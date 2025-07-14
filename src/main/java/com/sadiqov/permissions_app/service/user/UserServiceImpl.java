@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         Group group = groupRepository.findById(request.groupId())
                 .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("group.not.found",
                         null, LocaleContextHolder.getLocale())));
-
+        user.setGroup(group);
         return userMapper.toResponse(userRepository.save(user));
     }
 
