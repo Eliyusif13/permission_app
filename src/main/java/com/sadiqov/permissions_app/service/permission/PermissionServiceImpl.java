@@ -41,6 +41,8 @@ public class PermissionServiceImpl implements PermissionService {
 
         existing.setName(request.name());
         return mapper.toResponse(repository.save(existing));
+
+
     }
 
     @Override

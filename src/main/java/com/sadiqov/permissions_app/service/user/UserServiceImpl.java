@@ -72,6 +72,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("group.not.found",
                         null, LocaleContextHolder.getLocale())));
         user.setGroup(group);
+
+        if (request.permissionIds() != null && !request.permissionIds().isEmpty()) {
+            Set<Permission> permissions = permissionRepository.findAllById(request.permissionIds());
+            if (permissions.size() != request.permissionIds().size()) {
+                throw new EntityNotFoundException("Some permissions not found");
+            }
+            user.setPermissions(permissions);
+        }
         return userMapper.toResponse(userRepository.save(user));
     }
 
@@ -102,6 +110,11 @@ public class UserServiceImpl implements UserService {
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             throw new EntityNotFoundException(messageSource.getMessage("error.alreadyExists",
+                    null, LocaleContextHolder.getLocale()));
+        }
+
+        if (request.password().length() < 8) {
+            throw new EntityNotFoundException(messageSource.getMessage("password.required.regexp",
                     null, LocaleContextHolder.getLocale()));
         }
 
@@ -142,17 +155,23 @@ public class UserServiceImpl implements UserService {
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.username(), request.password()
+                        request.username(),
+                        request.password()
                 )
         );
 
         User user = userRepository.findByUsername(request.username())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        String token = jwtService.generateToken(user.getUsername());
+        String token = jwtService.generateToken(user);
 
         return AuthResponse.builder()
                 .token(token)
+                .username(user.getUsername())
+                .groupName(user.getGroup() != null ? user.getGroup().getName() : null)
+                .permissions(user.getPermissions().stream()
+                        .map(Permission::getName)
+                        .collect(Collectors.toSet()))
                 .build();
     }
 

@@ -84,7 +84,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private Set<Permission> getPermissionsByIds(Set<Long> ids) {
-        List<Permission> permissions = permissionRepository.findAllById(ids);
+        List<Permission> permissions = permissionRepository.findAllById((Iterable<Long>) ids);
         if (permissions.size() != ids.size()) {
             throw new EntityNotFoundException(
                     messageSource.getMessage("error.notfound", null, LocaleContextHolder.getLocale())

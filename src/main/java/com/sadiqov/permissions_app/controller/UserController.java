@@ -1,8 +1,6 @@
 package com.sadiqov.permissions_app.controller;
 
-
 import com.sadiqov.permissions_app.dto.request.LoginRequest;
-import com.sadiqov.permissions_app.dto.request.RegisterRequest;
 import com.sadiqov.permissions_app.dto.request.UserRequest;
 import com.sadiqov.permissions_app.dto.response.AuthResponse;
 import com.sadiqov.permissions_app.dto.response.UserResponse;
@@ -10,6 +8,7 @@ import com.sadiqov.permissions_app.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,36 +18,43 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserService service;
 
+    @PreAuthorize("hasAuthority('user.create')")
     @PostMapping("/create")
-    public ResponseEntity<AuthResponse> create(@RequestBody @Valid RegisterRequest request) {
-        return ResponseEntity.ok(userService.register(request));
+    public ResponseEntity<UserResponse> create(@RequestBody @Valid UserRequest request) {
+        return ResponseEntity.ok(service.create(request));
+    }
+
+    @PreAuthorize("hasAuthority('user.update')")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserResponse> update(@PathVariable Long id,
+                                               @RequestBody @Valid UserRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
+    }
+
+    @PreAuthorize("hasAuthority('user.delete')")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAuthority('user.view')")
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
+    }
+
+    @PreAuthorize("hasAuthority('user.view')")
+    @GetMapping("/getAll")
+    public ResponseEntity<List<UserResponse>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request) {
-        return ResponseEntity.ok(userService.login(request));
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody @Valid UserRequest request) {
-        return ResponseEntity.ok(userService.update(id, request));
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        userService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/getById/{id}")
-    public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getById(id));
-    }
-
-    @GetMapping("/getAll")
-    public ResponseEntity<List<UserResponse>> getAll() {
-        return ResponseEntity.ok(userService.getAll());
+        return ResponseEntity.ok(service.login(request));
     }
 }
+
