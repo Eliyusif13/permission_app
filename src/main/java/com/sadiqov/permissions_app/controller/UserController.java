@@ -23,7 +23,7 @@ public class UserController {
     private final UserService service;
 
     @PostMapping("/create")
-    public ResponseEntity<AuthResponseLogin> create(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponseLogin> create(@RequestBody @Valid RegisterRequest request) {
         return ResponseEntity.ok(service.register(request));
     }
 

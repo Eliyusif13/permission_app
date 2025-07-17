@@ -8,9 +8,10 @@ import jakarta.validation.constraints.Size;
 import java.util.Set;
 
 public record RegisterRequest(
-
         String username,
         String email,
+
+        @Size(min = 6, message = "password.required.regexp")
         String password,
         @NotNull
         Set<Long> groupIds,
