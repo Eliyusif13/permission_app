@@ -23,27 +23,27 @@ public class PermissionController {
         return ResponseEntity.ok(service.create(request));
     }
 
-    @PreAuthorize("hasAuthority('permission.update')")
+    @PreAuthorize("hasAuthority('user.update')")
     @PutMapping("/update/{id}")
     public ResponseEntity<PermissionResponse> update(@PathVariable Long id,
                                                      @RequestBody @Valid PermissionRequest request) {
         return ResponseEntity.ok(service.update(id, request));
     }
 
-    @PreAuthorize("hasAuthority('permission.delete')")
+    @PreAuthorize("hasAuthority('user.delete')")
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAuthority('permission.read')")
+    @PreAuthorize("hasAuthority('user.read')")
     @GetMapping("getById/{id}")
     public ResponseEntity<PermissionResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    @PreAuthorize("hasAuthority('permission.read')")
+    @PreAuthorize("hasAuthority('user.read')")
     @GetMapping("/getAll")
     public ResponseEntity<List<PermissionResponse>> getAll() {
         return ResponseEntity.ok(service.getAll());

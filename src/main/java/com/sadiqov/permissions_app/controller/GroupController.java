@@ -22,27 +22,27 @@ public class GroupController {
         return ResponseEntity.ok(groupService.create(request));
     }
 
-    @PreAuthorize("hasAuthority('group.update')")
+    @PreAuthorize("hasAuthority('user.update')")
     @PutMapping("/update/{id}")
     public ResponseEntity<GroupResponse> update(@PathVariable Long id,
                                                 @RequestBody @Valid GroupRequest request) {
         return ResponseEntity.ok(groupService.update(id, request));
     }
 
-    @PreAuthorize("hasAuthority('group.delete')")
+    @PreAuthorize("hasAuthority('user.delete')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         groupService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAuthority('group.view')")
+    @PreAuthorize("hasAuthority('user.read')")
     @GetMapping("/getById/{id}")
     public ResponseEntity<GroupResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(groupService.getById(id));
     }
 
-    @PreAuthorize("hasAuthority('group.view')")
+    @PreAuthorize("hasAuthority('user.read')")
     @GetMapping("/getAll")
     public ResponseEntity<List<GroupResponse>> getAll() {
         return ResponseEntity.ok(groupService.getAll());
