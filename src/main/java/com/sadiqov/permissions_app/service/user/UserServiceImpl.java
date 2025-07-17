@@ -157,6 +157,7 @@ public class UserServiceImpl implements UserService {
 
         return AuthResponse.builder()
                 .token(token)
+                .message("Login ugurlu alindi")
                 .username(user.getUsername())
                 .groupName(user.getGroup() != null ? user.getGroup().getName() : null)
                 .permissions(user.getPermissions().stream()
