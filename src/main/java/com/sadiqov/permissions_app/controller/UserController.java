@@ -4,6 +4,7 @@ import com.sadiqov.permissions_app.dto.request.LoginRequest;
 import com.sadiqov.permissions_app.dto.request.RegisterRequest;
 import com.sadiqov.permissions_app.dto.request.UserRequest;
 import com.sadiqov.permissions_app.dto.response.AuthResponse;
+import com.sadiqov.permissions_app.dto.response.AuthResponseLogin;
 import com.sadiqov.permissions_app.dto.response.UserResponse;
 import com.sadiqov.permissions_app.service.user.UserService;
 import jakarta.validation.Valid;
@@ -22,14 +23,14 @@ public class UserController {
     private final UserService service;
 
     @PostMapping("/create")
-    public ResponseEntity<AuthResponse> create(@RequestBody @Valid RegisterRequest request) {
+    public ResponseEntity<AuthResponseLogin> create(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(service.register(request));
     }
 
     @PreAuthorize("hasAuthority('user.update')")
     @PutMapping("/update/{id}")
     public ResponseEntity<UserResponse> update(@PathVariable Long id,
-                                               @RequestBody @Valid UserRequest request) {
+                                               @RequestBody  UserRequest request) {
         return ResponseEntity.ok(service.update(id, request));
     }
 

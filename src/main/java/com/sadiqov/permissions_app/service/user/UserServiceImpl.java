@@ -5,10 +5,12 @@ import com.sadiqov.permissions_app.dto.request.LoginRequest;
 import com.sadiqov.permissions_app.dto.request.RegisterRequest;
 import com.sadiqov.permissions_app.dto.request.UserRequest;
 import com.sadiqov.permissions_app.dto.response.AuthResponse;
+import com.sadiqov.permissions_app.dto.response.AuthResponseLogin;
 import com.sadiqov.permissions_app.dto.response.UserResponse;
 import com.sadiqov.permissions_app.entity.Group;
 import com.sadiqov.permissions_app.entity.Permission;
 import com.sadiqov.permissions_app.entity.User;
+import com.sadiqov.permissions_app.exception.InvalidRequestException;
 import com.sadiqov.permissions_app.mapper.UserMapper;
 import com.sadiqov.permissions_app.repo.GroupRepository;
 import com.sadiqov.permissions_app.repo.PermissionRepository;
@@ -94,15 +96,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponseLogin register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             throw new EntityNotFoundException(messageSource.getMessage("error.alreadyExists",
                     null, LocaleContextHolder.getLocale()));
         }
 
-        if (request.password().length() < 8) {
-            throw new EntityNotFoundException(messageSource.getMessage("password.required.regexp",
-                    null, LocaleContextHolder.getLocale()));
+        if (request.password().length() <= 8) {
+            throw new InvalidRequestException(
+                    messageSource.getMessage("password.required.regexp",
+                            null, LocaleContextHolder.getLocale()));
         }
 
         if (userRepository.existsByEmail(request.email()))
@@ -133,7 +136,7 @@ public class UserServiceImpl implements UserService {
                 .build();
         userRepository.save(user);
 
-        return new AuthResponse("User registered successfully");
+        return new AuthResponseLogin("User registered successfully");
 
 
     }

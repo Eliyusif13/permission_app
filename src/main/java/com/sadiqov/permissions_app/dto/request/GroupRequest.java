@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.Set;
 
 public record GroupRequest(
-        @NotBlank(message = "{group.name.notBlank}")
+        @NotBlank(message = "{group.not.found}")
         String name,
 
         @NotEmpty(message = "{group.permissions.notEmpty}")
