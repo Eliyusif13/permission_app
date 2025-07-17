@@ -18,7 +18,6 @@ public class PermissionController {
 
     private final PermissionService service;
 
-    @PreAuthorize("hasAuthority('permission.create')")
     @PostMapping("/creat")
     public ResponseEntity<PermissionResponse> create(@RequestBody @Valid PermissionRequest request) {
         return ResponseEntity.ok(service.create(request));
@@ -38,13 +37,13 @@ public class PermissionController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAuthority('permission.view')")
+    @PreAuthorize("hasAuthority('permission.read')")
     @GetMapping("getById/{id}")
     public ResponseEntity<PermissionResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    @PreAuthorize("hasAuthority('permission.view')")
+    @PreAuthorize("hasAuthority('permission.read')")
     @GetMapping("/getAll")
     public ResponseEntity<List<PermissionResponse>> getAll() {
         return ResponseEntity.ok(service.getAll());

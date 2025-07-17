@@ -17,7 +17,6 @@ public class GroupController {
 
     private final GroupService groupService;
 
-    @PreAuthorize("hasAuthority('group.create')")
     @PostMapping("/creat")
     public ResponseEntity<GroupResponse> create(@RequestBody @Valid GroupRequest request) {
         return ResponseEntity.ok(groupService.create(request));

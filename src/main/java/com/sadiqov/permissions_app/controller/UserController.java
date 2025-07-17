@@ -1,6 +1,7 @@
 package com.sadiqov.permissions_app.controller;
 
 import com.sadiqov.permissions_app.dto.request.LoginRequest;
+import com.sadiqov.permissions_app.dto.request.RegisterRequest;
 import com.sadiqov.permissions_app.dto.request.UserRequest;
 import com.sadiqov.permissions_app.dto.response.AuthResponse;
 import com.sadiqov.permissions_app.dto.response.UserResponse;
@@ -20,10 +21,9 @@ public class UserController {
 
     private final UserService service;
 
-    @PreAuthorize("hasAuthority('user.create')")
     @PostMapping("/create")
-    public ResponseEntity<UserResponse> create(@RequestBody @Valid UserRequest request) {
-        return ResponseEntity.ok(service.create(request));
+    public ResponseEntity<AuthResponse> create(@RequestBody @Valid RegisterRequest request) {
+        return ResponseEntity.ok(service.register(request));
     }
 
     @PreAuthorize("hasAuthority('user.update')")
@@ -40,13 +40,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAuthority('user.view')")
+    @PreAuthorize("hasAuthority('user.read')")
     @GetMapping("/getById/{id}")
     public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    @PreAuthorize("hasAuthority('user.view')")
+    @PreAuthorize("hasAuthority('user.read')")
     @GetMapping("/getAll")
     public ResponseEntity<List<UserResponse>> getAll() {
         return ResponseEntity.ok(service.getAll());

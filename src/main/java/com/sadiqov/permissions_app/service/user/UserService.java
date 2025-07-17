@@ -10,7 +10,6 @@ import com.sadiqov.permissions_app.dto.response.UserResponse;
 import java.util.List;
 
 public interface UserService {
-    UserResponse create(UserRequest request);
 
     UserResponse update(Long id, UserRequest request);
 

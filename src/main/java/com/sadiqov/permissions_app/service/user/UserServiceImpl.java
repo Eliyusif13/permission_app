@@ -42,20 +42,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     MessageSource messageSource;
 
-    @Override
-    public UserResponse create(UserRequest request) {
-        Group group = groupRepository.findById(request.groupId())
-                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("group.not.found",
-                        null, LocaleContextHolder.getLocale())));
 
-        User user = User.builder()
-                .username(request.username())
-                .password(passwordEncoder.encode(request.password()))
-                .group(group)
-                .build();
-
-        return userMapper.toResponse(userRepository.save(user));
-    }
 
     @Override
     public UserResponse update(Long id, UserRequest request) {
